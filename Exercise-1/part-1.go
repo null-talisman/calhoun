@@ -17,7 +17,7 @@ func main() {
 	// get specified filename; else use default filename
 	filename := ""
 	if len(os.Args) < 2 {
-        filename = "problems.csv"
+        	filename = "problems.csv"
     	}  else {
 		filename = os.Args[1]
 	}
