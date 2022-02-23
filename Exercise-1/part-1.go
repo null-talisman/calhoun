@@ -18,8 +18,8 @@ func main() {
 	filename := ""
 	if len(os.Args) < 2 {
         filename = "problems.csv"
-    }	else {
-			filename = os.Args[1]
+    	}  else {
+		filename = os.Args[1]
 	}
 
 	correct   := 0 // count number of correct answers
