@@ -10,14 +10,18 @@ import (
 	"log"
 	"strconv"
 	"time"
+	"bufio"
 )
 
-var status bool = false // status of quiz
+var status bool = false
+var correct float64 = 0
+var incorrect float64 = 0
+var questions float64 = 0
 
 // quiz has 30s timer unless specified by the user
 func timer() {
 	// get specified time; else use default time
-	timer := 5
+	timer := 30
 	if len(os.Args) > 2 {
 		x, err := strconv.Atoi(os.Args[2])
 		if err != nil {
@@ -28,9 +32,21 @@ func timer() {
 	// time.Duration(timer)
 	timer1 := time.NewTimer(time.Duration(timer)*time.Second) // create timer
 	<-timer1.C // start timer
-	fmt.Printf("\n---PENCILS DOWN---") // timer is up
-	status = true
-	return
+	fmt.Printf("\n---PENCILS DOWN---\n") // timer is up
+	time.Sleep(3)
+	// check if the score is 0; 
+	if correct == 0 {
+		fmt.Printf("Score: 0%")
+		os.Exit(0)
+	} else {
+		result := (correct/questions) * 100
+		//fmt.Printf("you got %v correct out of %v questions.", correct, questions)
+		fmt.Printf("Score: %.2f%", result)
+		os.Exit(0)
+	}
+	
+	// finish
+	os.Exit(0)
 }
 
 func main() {
@@ -45,11 +61,7 @@ func main() {
 		filename = os.Args[1]
 	}
 
-	correct   := 0 // count number of correct answers
-	incorrect := 0 // count number of incorrect answers
-
 	f, err := os.Open(filename) // create new file object called f
-
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -61,7 +73,7 @@ func main() {
 	for status == false {
 		// for each line in csv file f
 		for {
-			fmt.Printf("%v", status)
+			// fmt.Printf("%v", status)
 			// csv is read in as []strings
 			rec, err := csvReader.Read()
 			if err == io.EOF {
@@ -76,7 +88,7 @@ func main() {
 			result   := ""
 
 			// ask the question
-			fmt.Printf("%v=", question)
+			fmt.Printf("%v ", question)
 			fmt.Scanln(&result)
 
 			// conversions
@@ -92,8 +104,4 @@ func main() {
 
 		}
 	}
-
-	// print results of the quiz
-	fmt.Printf("---RESULTS---\nCorrect: %v\nIncorrect: %v\n", correct, incorrect)
-
 }
